@@ -17,6 +17,29 @@ namespace Crosschat.Client.Views
             headerLabel.TextColor = Device.OnPlatform(Color.Green, Color.Yellow, Color.Yellow);
             headerLabel.SetBinding(Label.TextProperty, new Binding("Subject", stringFormat:"  {0}"));
 
+            ////NOTE: this button is a workaround, adding button on HomePage doesn't work so it will be presented always
+            ////but will work only in Chat
+            //var sendImageItem = new ToolbarItem("send photo", Device.OnPlatform(null, null, "appbar.image.beach.png"),
+            //    () =>
+            //    {
+            //        var homeVm = ViewModelBase.CurrentViewModel as HomeViewModel;
+            //        if (homeVm != null)
+            //        {
+            //            homeVm.SendImageCommand.Execute(null);
+            //        }
+            //        else if (ViewModelBase.CurrentViewModel != null)
+            //        {
+            //            ViewModelBase.CurrentViewModel.Notify(";(", "You can send images only in chat. I just don't know how to show it only on specific pages - ToolbarItems.Add doesn't work on HomePage ;(");
+            //        }
+            //    });
+            //sendImageItem.SetBinding(ToolbarItem.CommandProperty, new Binding("SendImageCommand"));
+            //Device.OnPlatform(WinPhone: () => ToolbarItems.Add(sendImageItem));
+
+            var sendImage = new Button();
+            sendImage.Text = " Photo ";
+            sendImage.VerticalOptions = LayoutOptions.EndAndExpand;
+            sendImage.SetBinding(Button.CommandProperty, new Binding("SendImageCommand"));
+
             var sendButton = new Button();
             sendButton.Text = " Send ";
             sendButton.VerticalOptions = LayoutOptions.EndAndExpand;
@@ -45,14 +68,14 @@ namespace Crosschat.Client.Views
                     Padding = Device.OnPlatform(new Thickness(6,6,6,6), new Thickness(0), new Thickness(0)),
                     Children =
                         {
+                            //headerLabel,
+                            messageList,
                             new StackLayout
                                 {
-                                    Children = {inputBox, sendButton},
+                                    Children = {sendImage, inputBox, sendButton},
                                     Orientation = StackOrientation.Horizontal,
                                     Padding = new Thickness(0, Device.OnPlatform(0, 20, 0),0,0),
                                 },
-                            //headerLabel,
-                            messageList,
                         }
                 };
         }

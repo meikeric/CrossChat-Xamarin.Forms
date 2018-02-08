@@ -7,7 +7,6 @@ using Crosschat.Server.Infrastructure;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(TransportResource))]
-
 namespace Crosschat.Client.Droid.Infrastructure
 {
     public class TransportResource : ITransportResource
@@ -26,7 +25,9 @@ namespace Crosschat.Client.Droid.Infrastructure
             IsConnected = false;
             _triedConnect = true;
             _tcpClient = new TcpClient();
+
             await _tcpClient.ConnectAsync(GlobalConfig.IpAddress, GlobalConfig.Port).ConfigureAwait(false);
+
             StartListening();
             IsConnected = true;
         }

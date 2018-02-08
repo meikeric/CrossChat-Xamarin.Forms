@@ -94,7 +94,9 @@ namespace Crosschat.Client.ViewModels
                 string platform = Device.OnPlatform("iOS", "Android", "WP8") + (Device.Idiom == TargetIdiom.Tablet ? " Tablet" : "");
 
                 IsBusy = true;
+
                 var registrationResult = await _appManager.AccountManager.Register(Name, Password, ParseAge(SelectedAge), SelectedSex == "Male", SelectedCountry, platform);
+
                 IsBusy = false;
 
                 if (registrationResult == RegistrationResponseType.Success)

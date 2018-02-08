@@ -34,24 +34,6 @@ namespace Crosschat.Client.Views
                                 }
                         }
                 };
-            
-            //NOTE: this button is a workaround, adding button on HomePage doesn't work so it will be presented always
-            //but will work only in Chat
-            var sendImageItem = new ToolbarItem("send photo", Device.OnPlatform(null, null, "appbar.image.beach.png"),
-                () =>
-                {
-                    var homeVm = ViewModelBase.CurrentViewModel as HomeViewModel;
-                    if (homeVm != null)
-                    {
-                        homeVm.SendImageCommand.Execute(null);
-                    }
-                    else if (ViewModelBase.CurrentViewModel != null)
-                    {
-                        ViewModelBase.CurrentViewModel.Notify(";(", "You can send images only in chat. I just don't know how to show it only on specific pages - ToolbarItems.Add doesn't work on HomePage ;(");
-                    }
-                });
-            sendImageItem.SetBinding(ToolbarItem.CommandProperty, new Binding("SendImageCommand"));
-            Device.OnPlatform(WinPhone: () => ToolbarItems.Add(sendImageItem)); 
 
             // Accomodate iPhone status bar.
             this.Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
@@ -70,6 +52,7 @@ namespace Crosschat.Client.Views
             }
 
             AuthenticationResponseType result;
+
             try
             {
                 result = await _applicationManager.AccountManager.ValidateAccount();
@@ -79,6 +62,7 @@ namespace Crosschat.Client.Views
                 DisplayAlert(";(", "Server is not available", "Ok", null);
                 return;
             }
+
             if (result == AuthenticationResponseType.Success)
             {
                 await Navigation.PushAsync(new HomePage(new HomeViewModel(_applicationManager)));

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Crosschat.Client.Model.Contracts;
 using Crosschat.Client.Model.Proxies;
 using Crosschat.Server.Application.DataTransferObjects.Enums;
@@ -92,7 +93,15 @@ namespace Crosschat.Client.Model.Managers
         public async Task<RegistrationResponseType> Register(string name, string password, int age, bool sex, string country, string platform)
         {
             await InitDeviceInfo();
-            await ConnectionManager.ConnectAsync();
+            try
+            {
+                await ConnectionManager.ConnectAsync();
+            }
+            catch (Exception ex)
+            {
+
+            }
+
             var result = await _registrationServiceProxy.RegisterNewUser(
                 new RegistrationRequest
                 {

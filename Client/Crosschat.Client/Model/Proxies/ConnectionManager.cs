@@ -76,13 +76,22 @@ namespace Crosschat.Client.Model.Proxies
             {
                 if (IsConnected)
                     return;
+
                 await _semaphoreSlim.WaitAsync();
                 if (IsConnected)
                     return;
+
                 IsConnecting = true;
+
                 await _transport.ConnectAsync();
+
                 IsConnecting = false;
                 IsConnected = true;
+            }
+            catch (Exception ex)
+            {
+                IsConnecting = false;
+                IsConnected = false;
             }
             finally
             {
@@ -98,8 +107,10 @@ namespace Crosschat.Client.Model.Proxies
         {
             Interlocked.Increment(ref _lastToken);
             request.Token = _lastToken;
+
             var requestBytes = _serializer.Serialize(request);
             var command = new Command(CommandNames.Request, requestBytes);
+
             return _requestsHandler.WaitForResponse<TResponse>(request, () => _transport.SendData(_commandParser.ToBytes(command)));
         }
 
@@ -116,6 +127,7 @@ namespace Crosschat.Client.Model.Proxies
         {
             await _semaphoreSlim.WaitAsync();
             await _transport.DisconnectAsync().WrapWithErrorIgnoring();
+
             IsConnected = false;
             IsConnecting = false;
             _semaphoreSlim.Release();
